@@ -1,0 +1,31 @@
+package com.wp.demo
+
+import java.io.{File, PrintWriter}
+import java.util.Base64
+
+import org.apache.commons.io.Charsets
+
+import scala.io.Source
+
+object decodeMdn {
+
+  def main(args: Array[String]): Unit = {
+
+    //获取加密的文件数据
+    val file = Source.fromFile("C:\\Users\\Administrator\\Desktop\\waitdecodemdn.txt")
+    val result = file.getLines().map(y => {
+      val decoder = Base64.getDecoder
+      val data = new String(decoder.decode(y.getBytes(Charsets.UTF_8)))
+      data
+    })
+
+    //解密后数据写进某路径文件中  格式 一行一个手机号
+    val writer = new PrintWriter(new File("C:\\Users\\Administrator\\Desktop\\mdn.txt"))
+    while (result.hasNext){
+
+      writer.write(result.next()+"\n")
+    }
+    writer.close()
+
+  }
+}
