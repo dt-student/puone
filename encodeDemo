@@ -1,0 +1,29 @@
+package com.wp.demo
+
+import java.io.{File, PrintWriter}
+import java.util.Base64
+
+import org.apache.commons.io.Charsets
+
+import scala.collection.mutable.ArrayBuffer
+import scala.io.Source
+
+
+object encodeMdn {
+
+  def main(args: Array[String]): Unit = {
+
+    val file = Source.fromFile("C:\\Users\\Administrator\\Desktop\\waitencodemdn.txt")
+    val result = file.getLines().flatMap(x=>x.split("\\s+")).map(y=>{
+      val encoder = Base64.getEncoder
+      val data = new String(encoder.encode(y.getBytes(Charsets.UTF_8)))
+      data+"\n"
+    })
+    val writer = new PrintWriter(new File("C:\\Users\\Administrator\\Desktop\\waitdecodemdn.txt"))
+    while (result.hasNext){
+
+      writer.write(result.next())
+    }
+    writer.close()
+  }
+}
