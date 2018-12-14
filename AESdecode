@@ -1,0 +1,74 @@
+package com.wp.aesdecode;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.*;
+import java.security.Key;
+
+
+public class AesDecode {
+    public static final String AESTYPE="AES";
+
+    public static String AES_Decrypt(String keyStr, String encryptData) {
+        byte[] decrypt = null;
+        try {
+            Key key = generateKey(keyStr);
+            Cipher cipher = Cipher.getInstance(AESTYPE);
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            decrypt = cipher.doFinal(Base64Util.decodeBase64(encryptData));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assert decrypt != null;
+        return new String(decrypt).trim();
+    }
+
+    private static Key generateKey(String key) throws Exception {
+        try {
+            return new SecretKeySpec(key.getBytes(), "AES");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+    }
+    public static void main(String args[]){
+        String result = "";
+        String encoding = "UTF-8";
+        String re = "";
+
+
+        //读取带解密文件
+        File file1 = new File("F:\\love\\test.txt");
+        File file = new File("F:\\love\\endoce1.txt");
+        BufferedWriter out  = null;
+        if (file1.isFile() && file1.exists()) { //判断文件是否存在
+            InputStreamReader read = null;//考虑到编码格式
+            try {
+
+                read = new InputStreamReader(new FileInputStream(file1), encoding);
+                BufferedReader bufferedReader = new BufferedReader(read);
+                String lineTxt = null;
+                FileWriter fw = new FileWriter(file.getAbsoluteFile());
+                out = new BufferedWriter(fw);
+                while ((lineTxt = bufferedReader.readLine()) != null) {
+                   re = AES_Decrypt("6IMUM98562QC435L",lineTxt);
+                    out.write(re+"\n");
+                }
+                out.flush();
+                out.close();
+
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+
+        }
+    }
+}
